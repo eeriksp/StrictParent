@@ -17,6 +17,8 @@ pip install strictparent
 - `@overrides` -- decorator for methods, states that this subclass method is overriding a method in parent class. If parent class does not have such a method, raises an `InheritanceError`. Also, if a subclass is overriding a parent class method without making it explicit by using this decorator, an exception is risen.
 - `@force_override` -- decorator for overriding finalized parent class methods.
 
+All the decorators can be used for inline classes as well.
+
 The purpose of this approach is to make the code more understandable and to protect the developer against accidentally overriding a method, which served an important role in the parent class. However all methods can still be overridden if explicitly stated by `@force_override` decorator. This way we can wright a more readable code without loosing any freedom.
 
 Since you might need to use these functionalities together with ABC classes, `StrictParent`'s metaclass inherits from `ABCMeta` to prevent metaclass conflict. This means that once you inherit from `StrictParent`, you have access to all the features of ABC as well.

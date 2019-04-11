@@ -49,14 +49,14 @@ class StrictParentMeta(ABCMeta):
                     if getattr(base, name, False):
                         break
                 else:
-                    raise InheritanceError(f'Method {name} of {cls_name} claims to '
+                    raise InheritanceError(f'`{name}` of {cls_name} claims to '
                                            'override a parent class method, but no parent class method with that name were found.')
             else:
                 # TODO We now exclude all built-in method including `__str__`.
                 # Should be so that if they are overridden in parent class (not equal to object.this_method),
                 # then they should be taken into account.
                 if name in all_base_class_member_names and name not in EmptyClass.__dict__:
-                    raise InheritanceError(f'Method {name} of {cls_name} is '
+                    raise InheritanceError(f'`{name}` of {cls_name} is '
                                            'overriding a parent class method, but does not have `@overrides` decorator.')
 
         # Check `@final` violations
@@ -69,7 +69,7 @@ class StrictParentMeta(ABCMeta):
                         continue
                     if getattr(base_class_method, FINALIZED, False):
                         raise InheritanceError(
-                            f'Method `{base_class_method}` is finalized in `{base.__name__}`. '
+                            f'`{base_class_method.__name__}` is finalized in `{base.__name__}`. '
                             'You cannot override it unless you decorate it with `@force_override`.')
         return cls
 

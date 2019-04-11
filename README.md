@@ -5,8 +5,11 @@ Python is built to be as dynamic and permissive as possible. However, especially
 ## Features
 
 - `StrictParent` -- parent class for all your custom classes using these functionalities
-- `@final` -- decorator for methods, raises exception if subclasses try to override this method
-- `@overrides` -- decorator for methods, states that this subclass method is overriding a method in parent class. If parent class does not have such a method, raises an exception. If parent class makes this method finalized (by adding `@final` decorator), subclass can still override it by passing `force=True` to the `@overrides` decorator. The developer is thus protected against accidentally overriding a finalized method, but can still do so, if they know what they are doing.
+- `@final` -- makes a method finalized, raises `InheritanceError` if subclasses try to override this method
+- `@overrides` -- decorator for methods, states that this subclass method is overriding a method in parent class. If parent class does not have such a method, raises an `InheritanceError`. Also, if a subclass is overriding a parent class method without making it explicit by using this decorator, an exception is risen.
+- `@force_override` -- decorator for overriding finalized parent class methods.
+
+The purpose of this approach is to make the code more understandable and to protect the developer against accidentally overriding a method, which served an important role in the parent class. However all methods can still be overridden if explicitly stated by `@force_override` decorator. This way we can wright a more readable code without loosing any freedom.
 
 Since you might need to use these functionalities together with ABC classes, `StrictParent`'s metaclass inherits from `ABCMeta` to prevent metaclass conflict. This means that once you inherit from `StrictParent`, you have access to all the features of ABC as well.
 

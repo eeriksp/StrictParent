@@ -2,6 +2,8 @@
 
 Python is built to be as dynamic and permissive as possible. However, especially in case of larger applications it is beneficial to establish some stricter principles. StrictParent helps you to make your Python classes more structured and enforcing contracts while still leaving the opportunity to break the rules if necessary.
 
+light-weighted and dependency free 😊
+
 ## Features
 
 - `StrictParent` -- parent class for all your custom classes using these functionalities
@@ -57,7 +59,23 @@ class RebelChild(Parent):
     def overrideable_method(self):
         return 'I am hiding my lineage'
 
-    def final_method(self):  # Will raise an exception, because `final_method` has been finalized in `Parent` class
+    # Will raise an exception, because `final_method` has been finalized in `Parent` class
+    def final_method(self):
         return 'I am against the machine!'
 
+```
+
+Please let us know if there are any other features that should be added to this package.
+
+## Contributing
+
+There is no need for a virtual environment since you do not need to install any dependencies.
+
+### Running tests
+
+Being in the root directory:
+
+```sh
+cd strictparent/
+./tests.py
 ```

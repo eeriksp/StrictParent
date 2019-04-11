@@ -27,6 +27,10 @@ class StrictParentTest(unittest.TestCase):
                 @force_override
                 def final_method(self):
                     return 'I am aware I have broken the convention'
+
+                def my_own_method(self):
+                    pass
+
         except Exception as e:
             self.fail(e)
 

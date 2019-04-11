@@ -8,6 +8,8 @@ FORCE_OVERRIDE = '___force_override___'
 
 
 class EmptyClass:
+    # TODO Perhaps it should be an empty ABC class,
+    # because ABCMeta adds its own features.
     pass
 
 

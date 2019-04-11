@@ -1,6 +1,3 @@
-from abc import ABCMeta
-
-
 # Three underscores to avoid potential conflicts with Python's own features
 FINALIZED = '___finalized___'
 OVERRIDES = '___overrides___'
@@ -32,9 +29,12 @@ def force_override(obj):
     return obj
 
 
-class StrictParentMeta(ABCMeta):
-    def __new__(mcls, cls_name, bases, namespace, **kwargs):
-        cls = super().__new__(mcls, cls_name, bases, namespace, **kwargs)
+class StrictParent:
+    def __init_subclass__(cls):
+        cls_name = cls.__name__
+        bases = cls.__bases__
+        namespace = cls.__dict__
+
         # Check if `@overrides` are valid
         sum_of_base_dicts = {}
         for base in bases:
@@ -42,7 +42,8 @@ class StrictParentMeta(ABCMeta):
 
         all_base_class_member_names = {name for name in sum_of_base_dicts}
 
-        callables = {name: value for (name, value) in namespace.items() if callable(value)}
+        callables = {name: value for (
+            name, value) in namespace.items() if callable(value)}
         for name, value in callables.items():
             if getattr(value, OVERRIDES, False) or getattr(value, FORCE_OVERRIDE, False):
                 for base in bases:
@@ -71,8 +72,3 @@ class StrictParentMeta(ABCMeta):
                         raise InheritanceError(
                             f'`{base_class_method.__name__}` is finalized in `{base.__name__}`. '
                             'You cannot override it unless you decorate it with `@force_override`.')
-        return cls
-
-
-class StrictParent(metaclass=StrictParentMeta):
-    pass

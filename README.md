@@ -21,7 +21,7 @@ All the decorators can be used for inline classes as well.
 
 The purpose of this approach is to make the code more understandable and to protect the developer against accidentally overriding a method, which served an important role in the parent class. However all methods can still be overridden if explicitly stated by `@force_override` decorator. This way we can wright a more readable code without loosing any freedom.
 
-Since you might need to use these functionalities together with ABC classes, `StrictParent`'s metaclass inherits from `ABCMeta` to prevent metaclass conflict. This means that once you inherit from `StrictParent`, you have access to all the features of ABC as well.
+`StrictParent` has no metaclass, so your do not have to face any trouble regarding metaclass fonflicts.
 
 ```py
 from strictparent import StrictParent, final, overrides
@@ -37,10 +37,6 @@ class Parent(StrictParent):
     def final_method(self):
         return 'Knowledge & vision arose in me: this is the last birth. There is now no further becoming.'
 
-    @abstractmethod  # You can use all the ABC features here
-    def abstract_method(self):
-        pass
-
 
 class ObedientChild(Parent):
 
@@ -51,10 +47,6 @@ class ObedientChild(Parent):
     @force_override  # Finalized methods can be overridden if explicitly stated
     def final_method(self):
         return 'I am aware I have broken the convention'
-
-    @overrides
-    def abstract_method(self):
-        return 'Not abstract any more'
 
 
 class RebelChild(Parent):

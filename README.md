@@ -4,6 +4,12 @@ Python is built to be as dynamic and permissive as possible. However, especially
 
 light-weighted and dependency free 😊
 
+## Installation
+
+```sh
+pip install strictparent
+```
+
 ## Features
 
 - `StrictParent` -- parent class for all your custom classes using these functionalities

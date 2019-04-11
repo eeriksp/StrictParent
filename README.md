@@ -66,7 +66,7 @@ class RebelChild(Parent):
 
 ### Using with built-in decorators
 
-You can combine the custom decorators with the built-in `@classmethod` and  `@staticmethod` decorators. The order does not matter, however we recommend the following order for it looks pretty:
+You can combine the custom decorators with the built-in `@classmethod` and  `@staticmethod` decorators. The custom decorator should be the final wrapper, so add it on the top of all the other decorators:
 
 ```py
 @final

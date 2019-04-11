@@ -113,6 +113,33 @@ class StrictParentTest(unittest.TestCase):
                     pass
         except Exception as e:
             self.fail(e)
+        with self.assertRaisesRegex(InheritanceError,
+                                    '`overrideable_method` of Child is '
+                                    'overriding a parent class method, but does not have `@overrides` decorator.'):
+            class Child(Parent):
+                @staticmethod
+                def overrideable_method(self):
+                    pass
+
+    def test_together_with_property(self):
+        try:
+            class Child(Parent):
+                @overrides
+                @property
+                def overrideable_method(self):
+                    return 'Foo'
+            # We add a wrapper around the property, make sure this does not break the property interface
+            self.assertEqual(Child.overrideable_method, 'Foo')
+        except Exception as e:
+            self.fail(e)
+        with self.assertRaisesRegex(InheritanceError,
+                                    '`overrideable_method` of Child is '
+                                    'overriding a parent class method, but does not have `@overrides` decorator.'):
+            class Child(Parent):
+                @property
+                def overrideable_method(self):
+                    pass
+    # TODO add tests for objects with slots, they should function just as properties
 
 
 if __name__ == '__main__':

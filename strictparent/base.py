@@ -14,14 +14,35 @@ class InheritanceError(AssertionError):
     pass
 
 
+class Wrapper:
+    """
+    Wraps the original object
+    to enable assigning attributes to objects with a closed scope
+    """
+    def __init__(self, obj, name, value):
+        self.obj = obj
+        setattr(self, name, value)
+
+    def __getattr__(self, name):
+        return getattr(self.obj, name)
+
+    def __get__(self, instance, owner):
+        return self.obj.fget(self.obj)
+    # FIXME Implement setter and deleater as well
+
+
 def final(obj):
     setattr(obj, FINALIZED, True)
     return obj
 
 
-def overrides(obj):
-    setattr(obj, OVERRIDES, True)
-    return obj
+def overrides(obj):  # TODO all descriptors should use the same pattern
+    try:
+        setattr(obj, OVERRIDES, True)
+        return obj
+    # "AssertionError: '(...)' object has no attribute '___overrides___'"
+    except Exception:
+        return Wrapper(obj, OVERRIDES, True)
 
 
 def force_override(obj):
@@ -42,9 +63,9 @@ class StrictParent:
 
         all_base_class_member_names = {name for name in sum_of_base_dicts}
 
-        callables = {name: value for (
-            name, value) in namespace.items() if callable(value)}
-        for name, value in callables.items():
+        functions = {name: value for (name, value) in namespace.items()
+                     if callable(value) or isinstance(value, (staticmethod, classmethod, property))}
+        for name, value in functions.items():
             if getattr(value, OVERRIDES, False) or getattr(value, FORCE_OVERRIDE, False):
                 for base in bases:
                     if getattr(base, name, False):
@@ -61,7 +82,7 @@ class StrictParent:
                                            'overriding a parent class method, but does not have `@overrides` decorator.')
 
         # Check `@final` violations
-        for name, value in callables.items():
+        for name, value in functions.items():
             if not getattr(value, FORCE_OVERRIDE, False):
                 for base in bases:
                     base_class_method = getattr(base, name, False)

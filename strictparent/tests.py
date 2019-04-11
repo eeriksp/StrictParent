@@ -17,6 +17,9 @@ class Parent(StrictParent):
     def overrideable_method(self):
         return 'I do not mind being overridden'
 
+    def another_overrideable_method(self, foo: int = 8):
+        return 'Hey'
+
     @final
     def final_method(self):
         return 'Knowledge & vision arose in me: this is the last birth. There is now no further becoming.'
@@ -93,6 +96,23 @@ class StrictParentTest(unittest.TestCase):
                 @overrides
                 class FinalInlineClass:
                     pass
+
+    def test_together_with_staticmethod_and_classmethod(self):
+        try:
+            class Child(Parent):
+                @final
+                @overrides
+                @staticmethod
+                def overrideable_method(self):
+                    pass
+
+                @final
+                @overrides
+                @classmethod
+                def another_overrideable_method(self):
+                    pass
+        except Exception as e:
+            self.fail(e)
 
 
 if __name__ == '__main__':

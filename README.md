@@ -2,7 +2,7 @@
 
 Python is built to be as dynamic and permissive as possible. However, especially in case of larger applications it is beneficial to establish some stricter principles. StrictParent helps you to make your Python classes more structured and enforcing contracts while still leaving the opportunity to break the rules if necessary.
 
-light-weighted and dependency free 😊
+Light-weighted and dependency free 😊
 
 ## Installation
 
@@ -21,11 +21,10 @@ All the decorators can be used for inline classes as well.
 
 The purpose of this approach is to make the code more understandable and to protect the developer against accidentally overriding a method, which served an important role in the parent class. However all methods can still be overridden if explicitly stated by `@force_override` decorator. This way we can wright a more readable code without loosing any freedom.
 
-`StrictParent` has no metaclass, so your do not have to face any trouble regarding metaclass fonflicts.
+`StrictParent` has no metaclass, so your do not have to face any trouble regarding metaclass conflicts.
 
 ```py
 from strictparent import StrictParent, final, overrides
-from abc import abstractmethod
 
 
 class Parent(StrictParent):
@@ -63,6 +62,18 @@ class RebelChild(Parent):
     def final_method(self):
         return 'I am against the machine!'
 
+```
+
+### Using with built-in decorators
+
+You can combine the custom decorators with the built-in `@classmethod` and  `@staticmethod` decorators. The order does not matter, however we recommend the following order for it looks pretty:
+
+```py
+@final
+@overrides
+@classmethod
+def overrideable_method(self):
+    pass
 ```
 
 Please let us know if there are any other features that should be added to this package.

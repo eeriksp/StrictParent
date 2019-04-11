@@ -41,7 +41,9 @@ class StrictParentMeta(ABCMeta):
             sum_of_base_dicts.update(base.__dict__)
 
         all_base_class_member_names = {name for name in sum_of_base_dicts}
-        for name, value in namespace.items():
+
+        callables = {name: value for (name, value) in namespace.items() if callable(value)}
+        for name, value in callables.items():
             if getattr(value, OVERRIDES, False) or getattr(value, FORCE_OVERRIDE, False):
                 for base in bases:
                     if getattr(base, name, False):
@@ -58,7 +60,7 @@ class StrictParentMeta(ABCMeta):
                                            'overriding a parent class method, but does not have `@overrides` decorator.')
 
         # Check `@final` violations
-        for name, value in namespace.items():
+        for name, value in callables.items():
             if not getattr(value, FORCE_OVERRIDE, False):
                 for base in bases:
                     base_class_method = getattr(base, name, False)

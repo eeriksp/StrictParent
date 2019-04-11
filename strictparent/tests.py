@@ -5,6 +5,7 @@ from base import InheritanceError, StrictParent, final, overrides, force_overrid
 
 
 class Parent(StrictParent):
+    field = 42
 
     def overrideable_method(self):
         return 'I do not mind being overridden'
@@ -19,6 +20,7 @@ class StrictParentTest(unittest.TestCase):
     def test_obedient_child(self):
         try:
             class ObedientChild(Parent):
+                field = 55
 
                 @overrides
                 def overrideable_method(self):

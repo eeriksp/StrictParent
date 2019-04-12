@@ -14,39 +14,30 @@ class InheritanceError(AssertionError):
     pass
 
 
-class Wrapper:
-    """
-    Wraps the original object
-    to enable assigning attributes to objects with a closed scope
-    """
-    def __init__(self, obj, name, value):
-        self.obj = obj
-        setattr(self, name, value)
+class Data:
+    def __init__(self):
+        raise TypeError(
+            'Do not instantiate this class, it is just a container for data.')
+    finalized = set()
+    overrides = set()
+    force_override = set()
 
-    def __getattr__(self, name):
-        return getattr(self.obj, name)
 
-    def __get__(self, instance, owner):
-        return self.obj.fget(self.obj)
-    # FIXME Implement setter and deleater as well
+
 
 
 def final(obj):
-    setattr(obj, FINALIZED, True)
+    Data.finalized.add(obj)
     return obj
 
 
-def overrides(obj):  # TODO all descriptors should use the same pattern
-    try:
-        setattr(obj, OVERRIDES, True)
-        return obj
-    # "AssertionError: '(...)' object has no attribute '___overrides___'"
-    except Exception:
-        return Wrapper(obj, OVERRIDES, True)
+def overrides(obj):
+    Data.overrides.add(obj)
+    return obj
 
 
 def force_override(obj):
-    setattr(obj, FORCE_OVERRIDE, True)
+    Data.force_override.add(obj)
     return obj
 
 
@@ -66,7 +57,7 @@ class StrictParent:
         functions = {name: value for (name, value) in namespace.items()
                      if callable(value) or isinstance(value, (staticmethod, classmethod, property))}
         for name, value in functions.items():
-            if getattr(value, OVERRIDES, False) or getattr(value, FORCE_OVERRIDE, False):
+            if value in Data.overrides or value in Data.force_override:
                 for base in bases:
                     if getattr(base, name, False):
                         break
@@ -83,13 +74,13 @@ class StrictParent:
 
         # Check `@final` violations
         for name, value in functions.items():
-            if not getattr(value, FORCE_OVERRIDE, False):
+            if value not in Data.force_override:
                 for base in bases:
                     base_class_method = getattr(base, name, False)
                     if not base_class_method:
                         # i.e. this method does not exist in the base class
                         continue
-                    if getattr(base_class_method, FINALIZED, False):
+                    if base_class_method in Data.finalized:
                         raise InheritanceError(
                             f'`{base_class_method.__name__}` is finalized in `{base.__name__}`. '
                             'You cannot override it unless you decorate it with `@force_override`.')

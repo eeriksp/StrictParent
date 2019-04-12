@@ -6,6 +6,7 @@ from base import InheritanceError, StrictParent, final, overrides, force_overrid
 
 class Parent(StrictParent):
     field = 42
+    a = 8
 
     class InlineClass:
         foo = 5
@@ -23,6 +24,14 @@ class Parent(StrictParent):
     @final
     def final_method(self):
         return 'Knowledge & vision arose in me: this is the last birth. There is now no further becoming.'
+
+    @property
+    def a_property(self):
+        return 8
+
+    @a_property.setter
+    def a_property(self, value):
+        self.a = value
 
 
 class StrictParentTest(unittest.TestCase):
@@ -126,12 +135,12 @@ class StrictParentTest(unittest.TestCase):
             class Child(Parent):
                 @overrides
                 @property
-                def overrideable_method(self):
-                    return 'Foo'
-            # We add a wrapper around the property, make sure this does not break the property interface
-            self.assertEqual(Child.overrideable_method, 'Foo')
+                def a_property(self):
+                    return self.a  # = 8
+                
         except Exception as e:
             self.fail(e)
+        self.assertEqual(Child().a_property, 8)
         with self.assertRaisesRegex(InheritanceError,
                                     '`overrideable_method` of Child is '
                                     'overriding a parent class method, but does not have `@overrides` decorator.'):
@@ -140,6 +149,13 @@ class StrictParentTest(unittest.TestCase):
                 def overrideable_method(self):
                     pass
     # TODO add tests for objects with slots, they should function just as properties
+
+    def test_using_multiple_custom_decorators_together(self):
+        class Child(Parent):
+            @final
+            @overrides
+            def overrideable_method(self):
+                pass
 
 
 if __name__ == '__main__':

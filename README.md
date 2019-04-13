@@ -1,8 +1,8 @@
 # StrictParent
 
-Python is built to be as dynamic and permissive as possible. However, especially in case of larger applications it is beneficial to establish some stricter principles. StrictParent helps you to make your Python classes more structured and enforcing contracts while still leaving the opportunity to break the rules if necessary.
+Python is built to be as dynamic and permissive as possible. However, especially in case of larger applications it is beneficial to establish stricter principles. StrictParent helps you to make your Python classes more structured and enforcing contracts while still leaving the opportunity to break the rules if necessary.
 
-Light-weighted and dependency free 😊
+Light-weight and dependency free 😊
 
 ## Installation
 
@@ -10,16 +10,18 @@ Light-weighted and dependency free 😊
 pip install strictparent
 ```
 
+Requires Python 3.6+.
+
 ## Features
 
-- `StrictParent` -- parent class for all your custom classes using these functionalities
+- `StrictParent` -- parent class for all your custom classes using these features
 - `@final` -- makes a method finalized, raises `InheritanceError` if subclasses try to override this method
 - `@overrides` -- decorator for methods, states that this subclass method is overriding a method in parent class. If parent class does not have such a method, raises an `InheritanceError`. Also, if a subclass is overriding a parent class method without making it explicit by using this decorator, an exception is risen.
 - `@force_override` -- decorator for overriding finalized parent class methods.
 
 All the decorators can be used for inline classes as well.
 
-The purpose of this approach is to make the code more understandable and to protect the developer against accidentally overriding a method, which served an important role in the parent class. However all methods can still be overridden if explicitly stated by `@force_override` decorator. This way we can wright a more readable code without loosing any freedom.
+The purpose of this approach is to make the code more understandable and to protect the developer against accidentally overriding a method, which served an important role in the parent class. However all methods can still be overridden if explicitly stated by `@force_override` decorator. This way we can write more readable code without loosing any freedom.
 
 `StrictParent` has no metaclass, so your do not have to face any trouble regarding metaclass conflicts.
 
@@ -66,7 +68,7 @@ class RebelChild(Parent):
 
 ### Using with built-in decorators
 
-You can combine the custom decorators with the built-in `@classmethod`, `@staticmethod`, and `@property` decorators. The custom decorator should be the final wrapper, so add it on the top of all the other decorators:
+You can combine the custom decorators with the built-in `@classmethod`, `@staticmethod`, and `@property` decorators. The custom decorator must be the final wrapper, so add it to the top of all the other decorators:
 
 ```py
 @final

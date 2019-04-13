@@ -33,6 +33,9 @@ class Parent(StrictParent):
     def a_property(self, value):
         self.a = value
 
+    def __private(self):
+        pass
+
 
 class StrictParentTest(unittest.TestCase):
 
@@ -156,6 +159,23 @@ class StrictParentTest(unittest.TestCase):
             @overrides
             def overrideable_method(self):
                 pass
+    
+    def test_name_mangling(self):
+        try:
+            class Child(Parent):
+                @overrides
+                def __private(self):
+                    return 'I am an introvert like my ancestors'
+                
+        except Exception as e:
+            self.fail(e)
+        with self.assertRaisesRegex(InheritanceError,
+                                    '`__fake` of Child claims to override a parent class method, '
+                                    'but no parent class method with that name were found.'):
+            class Child(Parent):
+                @overrides
+                def __fake(self):
+                    pass
 
 
 if __name__ == '__main__':

@@ -31,7 +31,7 @@ def force_override(obj):
 
 class StrictParent:
     def __init_subclass__(cls):
-        bases = cls.__bases__
+        bases = cls.__mro__[1:]  # `__mro__` also containes the class itself, exclude it
         functions = {unmangle(name): value for (name, value) in cls.__dict__.items()
                      if callable(value) or isinstance(value, (staticmethod, classmethod, property))}
         for name, value in functions.items():

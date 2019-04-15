@@ -177,6 +177,18 @@ class StrictParentTest(unittest.TestCase):
                 def __fake(self):
                     pass
 
+    def test_longer_inheritance_chain(self):
+        try:
+            class Child(Parent): pass
+            
+            class Grandchild(Child):
+                @overrides
+                def overrideable_method(self):
+                    pass
+        except Exception as e:
+            self.fail(e)
+
+
 
 if __name__ == '__main__':
     unittest.main()

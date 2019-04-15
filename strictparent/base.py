@@ -31,13 +31,15 @@ def force_override(obj):
 
 class StrictParent:
     def __init_subclass__(cls):
-        bases = cls.__mro__[1:]  # `__mro__` also containes the class itself, exclude it
+        bases = _get_bases(cls)
         functions = {unmangle(name): value for (name, value) in cls.__dict__.items()
                      if callable(value) or isinstance(value, (staticmethod, classmethod, property))}
         for name, value in functions.items():
             _check_override_violations(name, value, bases, cls.__name__)
             _check_final_violations(name, value, bases)
-
+def _get_bases(cls):
+    mro = list(cls.__mro__[1:])  # `__mro__` also containes the class itself, exclude it
+    return [klass for klass in mro if klass not in (StrictParent, object)]
 
 def _check_final_violations(name, value, bases):
     if value in DecoratorRegistry.force_override:

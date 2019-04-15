@@ -140,7 +140,7 @@ class StrictParentTest(unittest.TestCase):
                 @property
                 def a_property(self):
                     return self.a  # = 8
-                
+
         except Exception as e:
             self.fail(e)
         self.assertEqual(Child().a_property, 8)
@@ -159,14 +159,14 @@ class StrictParentTest(unittest.TestCase):
             @overrides
             def overrideable_method(self):
                 pass
-    
+
     def test_name_mangling(self):
         try:
             class Child(Parent):
                 @overrides
                 def __private(self):
                     return 'I am an introvert like my ancestors'
-                
+
         except Exception as e:
             self.fail(e)
         with self.assertRaisesRegex(InheritanceError,
@@ -179,8 +179,9 @@ class StrictParentTest(unittest.TestCase):
 
     def test_longer_inheritance_chain(self):
         try:
-            class Child(Parent): pass
-            
+            class Child(Parent):
+                pass
+
             class Grandchild(Child):
                 @overrides
                 def overrideable_method(self):
@@ -188,6 +189,13 @@ class StrictParentTest(unittest.TestCase):
         except Exception as e:
             self.fail(e)
 
+    def test_str_method(self):
+        try:
+            class Child(Parent):
+                def __str__(self):
+                    return 'str'
+        except Exception as e:
+            self.fail(e)
 
 
 if __name__ == '__main__':

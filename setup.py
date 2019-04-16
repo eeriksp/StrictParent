@@ -11,7 +11,7 @@ setuptools.setup(
     description="@overrides and @final implementation for Python",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://gitlab.com/eeriksp/factory-man",
+    url="https://github.com/eeriksp/StrictParent",
     packages=setuptools.find_packages(),
     python_requires=">=3.6",
     classifiers=[

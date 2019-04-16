@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="strictparent",
-    version="3.3.1",
+    version="3.3.2",
     author="Eerik Sven Puudist",
     author_email="eerik@herbfoods.eu",
     description="@overrides and @final implementation for Python",
